@@ -1,5 +1,10 @@
 <template>
-  <form @submit.prevent="validationForm($event)" action="/" class="my-5 border border-2 border-dark p-5 rounded">
+  <form
+    @submit.prevent="validationForm()"
+    class="my-5 border border-2 border-dark p-5 rounded"
+    method="POST"
+    action="/"
+  >
     <h2 class="display-5 text-center mb-5">Cadastre o seu produto</h2>
     <label class="form-label" for="name">Nome do produto</label>
     <input
@@ -31,13 +36,12 @@
     <label class="form-label mt-3" for="disponible"
       >Disponível para compra?</label
     >
-    <select class="form-control" name="disponible">
-      <option selected disabled>Selecione uma opção</option>
+    <select class="form-control" v-model="disponibleProduct" name="disponible">
       <option>Sim</option>
       <option>Não</option>
     </select>
     <div v-if="err" class="alert alert-danger mt-3" role="alert">
-      {{errMsg}}
+      {{ errMsg }}
     </div>
     <button class="btn btn-success w-100 mt-5">Cadastrar</button>
   </form>
@@ -45,6 +49,7 @@
 
 <script>
 import { Money3Directive } from "v-money3";
+import axios from "axios";
 
 export default {
   data() {
@@ -54,10 +59,11 @@ export default {
       descriptionProduct: "",
       errMsg: "",
       amount: 0.0,
+      disponibleProduct: "",
       config: {
         prefix: "R$",
         suffix: "",
-        thousands: ",",
+        thousands: "",
         decimal: ".",
         precision: 2,
         disableNegative: false,
@@ -73,20 +79,45 @@ export default {
   },
   directives: { money3: Money3Directive },
   methods: {
-    validationForm(event) {
-      const form = event.target
-
-      if(this.nameProduct == "" || this.descriptionProduct == "" || this.amount == "") {
-        this.errMsg = "Os campos não podem estar vazios!"
-        this.err = true
-        return
+    async validationForm() {
+      if (
+        this.nameProduct === "" ||
+        this.descriptionProduct === "" ||
+        this.amount === "" ||
+        this.disponibleProduct === ""
+      ) {
+        this.errMsg = "Os campos não podem estar vazios!";
+        this.err = true;
+        return;
       } else {
-        this.errMsg = ""
-        this.err = false
-        form.submit()
+        this.errMsg = "";
+        this.err = false;
+        if (this.disponibleProduct === "Sim") {
+          this.disponibleProduct = true;
+        } else {
+          this.disponibleProduct = false;
+        }
+
+        let product = {
+          name: this.nameProduct,
+          description: this.descriptionProduct,
+          price: this.amount.split("R$")[1],
+          disponible: this.disponibleProduct,
+        };
+
+        try {
+          await axios.post("http://localhost:5000/product", product);
+          this.errMsg = "Produto cadastrado com sucesso!";
+          this.err = false;
+          window.location.href = "http://localhost:8080/"
+        } catch (error) {
+          console.error(error);
+          this.errMsg = "Ocorreu um erro ao enviar o formulário.";
+          this.err = true;
+        }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

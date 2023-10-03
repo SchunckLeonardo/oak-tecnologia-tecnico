@@ -41,7 +41,7 @@ app.post('/product', async (req, res) => {
         try {
             await Product.save()
             console.log("Novo produto cadastrado")
-            res.json({ msg: "Produto cadastrado" })
+            res.redirect("/")
         } catch (err) {
             res.json({ msg: "Produto não cadastrado" })
             console.log(err)
