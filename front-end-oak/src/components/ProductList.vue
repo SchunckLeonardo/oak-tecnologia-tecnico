@@ -9,18 +9,40 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th>1</th>
-          <td>Mark</td>
+        <tr v-for="product in products" :key="product.id">
+          <td>{{ product.name }}</td>
+          <td>R${{ product.price.toFixed(2) }}</td>
         </tr>
       </tbody>
     </table>
-    <router-link to="/cadastrar" class="btn btn-success w-100 mt-5">Cadastrar novo produto</router-link>
+    <router-link to="/cadastrar" class="btn btn-success w-100 mt-5"
+      >Cadastrar novo produto</router-link
+    >
   </div>
 </template>
 
 <script>
-export default {};
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      products: [],
+    };
+  },
+  created() {
+    this.getAllProducts();
+  },
+  methods: {
+    async getAllProducts() {
+      let allProducts = await axios.get("http://localhost:5000/");
+      let allProductsData = allProducts.data.allProducts;
+      allProductsData.forEach((product) => {
+        this.products.push(product);
+      });
+    },
+  },
+};
 </script>
 
 <style>

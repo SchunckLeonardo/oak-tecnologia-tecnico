@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./index.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,12 @@
   "bugs": {
     "url": "https://github.com/SchunckLeonardo/oak-tecnologia-tecnico/issues"
   },
-  "homepage": "https://github.com/SchunckLeonardo/oak-tecnologia-tecnico#readme"
+  "homepage": "https://github.com/SchunckLeonardo/oak-tecnologia-tecnico#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongodb": "^6.1.0",
+    "mongoose": "^7.5.3"
+  }
 }
